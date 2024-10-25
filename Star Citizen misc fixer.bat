@@ -12,12 +12,12 @@ REM BFCPEWINDOWCENTER=1
 REM BFCPEDISABLEQE=0
 REM BFCPEWINDOWHEIGHT=30
 REM BFCPEWINDOWWIDTH=120
-REM BFCPEWTITLE=Star Citizen Shader Cache Cleaner
+REM BFCPEWTITLE=Star Citizen Fixer
 REM BFCPEOPTIONEND
 @echo off
-rem This is a custom batch script for the Star Citizen Shader Cache folder.
+rem This is a custom batch script for fixing multiple star citizen issues.
 
-echo Welcome to the Star Citizen Shader Cache Cleaner by CamCitizen!
+echo Welcome to the Star Citizen Shader Fixer by PsyChicRoot!
 echo Version 1.0.0
 echo.
 echo.
