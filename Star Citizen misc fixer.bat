@@ -17,7 +17,7 @@ REM BFCPEOPTIONEND
 rem This is a custom batch script for fixing multiple Star Citizen issues.
 
 echo Welcome to the Star Citizen Shader Fixer by PsyChicRoot!
-echo Version 1.0.0
+echo Version 1.0.1
 echo.
 echo.
 
