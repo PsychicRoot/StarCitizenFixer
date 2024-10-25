@@ -1,4 +1,3 @@
-color a
 @ECHO OFF
 REM BFCPEOPTIONSTART
 REM BFCPEICONINDEX=-1
@@ -15,7 +14,7 @@ REM BFCPEWINDOWWIDTH=120
 REM BFCPEWTITLE=Star Citizen Fixer
 REM BFCPEOPTIONEND
 @echo off
-rem This is a custom batch script for fixing multiple star citizen issues.
+rem This is a custom batch script for fixing multiple Star Citizen issues.
 
 echo Welcome to the Star Citizen Shader Fixer by PsyChicRoot!
 echo Version 1.0.0
@@ -45,26 +44,69 @@ if %errorlevel% equ 1 (
     echo %NUM_FILES% files were deleted successfully.
 )
 
-rem Search for the "LIVE\user" folder on the entire C: drive
-echo Searching for the "LIVE\user" folder...
-set "USER_FOLDER="
+rem Locate the user folder with the exact path "\\LIVE\\user"
 for /f "delims=" %%i in ('dir "C:\" /s /b /ad ^| findstr /i "\\LIVE\\user$" 2^>nul') do (
     set "USER_FOLDER=%%i"
     goto :found
 )
 
 :found
-if defined USER_FOLDER (
+if defined %USER_FOLDER% (
     echo User folder found at: %USER_FOLDER%
-    choice /C YN /M "Do you want to delete this folder?"
-    if %errorlevel% equ 1 (
-        rd /s /q "%USER_FOLDER%"
-        echo User folder deleted successfully.
-    ) else (
-        echo User folder not deleted.
+
+    rem Define the backup location in the system temp folder
+    set BACKUP_FOLDER="%temp%\StarCitizenBackup"
+    mkdir %BACKUP_FOLDER%
+    
+    rem Define subfolder variables based on USER_FOLDER
+    set CUSTOMCHARACTERS_FOLDER=%USER_FOLDER%\client\0\customcharacters
+    set CONTROLS_FOLDER=%USER_FOLDER%\client\0\controls
+
+    rem Ask to back up customcharacters folder
+    if exist "%CUSTOMCHARACTERS_FOLDER%" (
+        choice /C YN /M "Do you want to backup the customcharacters folder?"
+        if %errorlevel% equ 1 (
+            echo Backing up customcharacters folder...
+            xcopy "%CUSTOMCHARACTERS_FOLDER%" "%BACKUP_FOLDER%\customcharacters" /E /I
+        ) else (
+            echo Skipping backup of customcharacters folder.
+        )
     )
+
+    rem Ask to back up controls folder
+    if exist "%CONTROLS_FOLDER%" (
+        choice /C YN /M "Do you want to backup the controls folder?"
+        if %errorlevel% equ 1 (
+            echo Backing up controls folder...
+            xcopy "%CONTROLS_FOLDER%" "%BACKUP_FOLDER%\controls" /E /I
+        ) else (
+            echo Skipping backup of controls folder.
+        )
+    )
+
+    rem Delete all contents within the user folder itself but keep the folder
+    echo Deleting all contents within the user folder...
+    for /D %%d in ("%USER_FOLDER%\*") do rd /s /q "%%d"
+    del /q "%USER_FOLDER%\*.*"
+    echo User folder contents deleted successfully.
+
+    rem Restore customcharacters and controls folders after deletion
+    if exist "%BACKUP_FOLDER%\customcharacters" (
+        echo Restoring customcharacters folder from backup...
+        mkdir "%CUSTOMCHARACTERS_FOLDER%"
+        xcopy "%BACKUP_FOLDER%\customcharacters" "%CUSTOMCHARACTERS_FOLDER%" /E /I
+        echo customcharacters folder restored successfully.
+    )
+
+    if exist "%BACKUP_FOLDER%\controls" (
+        echo Restoring controls folder from backup...
+        mkdir "%CONTROLS_FOLDER%"
+        xcopy "%BACKUP_FOLDER%\controls" "%CONTROLS_FOLDER%" /E /I
+        echo controls folder restored successfully.
+    )
+
 ) else (
-    echo "LIVE\user" folder not found.
+    echo Operation Completed enjoy!
 )
 
 echo.
